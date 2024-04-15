@@ -20,12 +20,15 @@ public class Compiler {
 	@Value("${file.filename}")
 	private String filename;
 
+	@Value("${file.main}")
+	private String main;
+
 	@Value("${file.java-extension}")
 	private String javaExtension;
 
 	public Object compile(String code) throws Exception {
 		createDirectoryAndFile(code);
-		return compileSourceAndLoadClass(filePath + filename + javaExtension);
+		return compileSourceAndLoadClass(filePath + filename + javaExtension, filePath + main + javaExtension);
 	}
 
 	private void createDirectoryAndFile(String code) {
@@ -51,9 +54,9 @@ public class Compiler {
 		}
 	}
 
-	private Object compileSourceAndLoadClass(String javaSourceFilePath) throws Exception {
+	private Object compileSourceAndLoadClass(String... javaSourceFilePaths) throws Exception {
 		JavaCompiler javaCompiler = ToolProvider.getSystemJavaCompiler();
-		int compileResult = javaCompiler.run(null, null, null, javaSourceFilePath);
+		int compileResult = javaCompiler.run(null, null, null, javaSourceFilePaths);
 
 		if (compileResult == 1) {
 			throw new IllegalArgumentException("컴파일에 실패했습니다.");
